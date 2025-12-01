@@ -11,6 +11,7 @@ import (
 
 func init() {
 	rootCmd.AddCommand(aoc.DayCmd)
+	rootCmd.AddCommand(aoc.SetupCmd)
 }
 
 var rootCmd = &cobra.Command{
