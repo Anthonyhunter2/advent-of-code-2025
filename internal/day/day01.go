@@ -54,7 +54,7 @@ func (d *Day1) SolvePart2(input []byte) (string, error) {
 			return "", fmt.Errorf("invalid distance given: %v", err)
 		}
 		if distance > 100 {
-			zeros += int(math.Trunc(float64(distance) / 100))
+			zeros += int(math.Floor(float64(distance) / 100))
 			distance = distance % 100
 		}
 
