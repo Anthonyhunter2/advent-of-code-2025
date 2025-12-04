@@ -1,7 +1,6 @@
 package day
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 )
@@ -47,6 +46,34 @@ func (d *Day3) SolvePart1(input []byte) (string, error) {
 }
 
 func (d *Day3) SolvePart2(input []byte) (string, error) {
-	// TODO: Implement part 2
-	return "", fmt.Errorf("not implemented")
+	jibawatts := 0
+	// newJibbybits := ""
+	for line := range strings.SplitSeq(string(input), "\n") {
+		newJibbybits := ""
+		indexPoint := 0
+		for i := 11; i >= 0; i-- {
+			nextDigit, lastIndex := findNextDigit(line, i, indexPoint)
+			newJibbybits = newJibbybits + strconv.Itoa(nextDigit)
+			indexPoint = lastIndex + 1
+		}
+		jibbybitsInt, _ := strconv.Atoi(newJibbybits)
+		jibawatts += jibbybitsInt
+	}
+	return strconv.Itoa(jibawatts), nil
+}
+
+func findNextDigit(numList string, numberLeft int, startingIndex int) (int, int) {
+	// were finding the next available digit with room to find
+	// the remaining numbers we need.
+	highestAvailable := 0
+	highestIndex := 0
+	numList = numList[startingIndex:]
+	for i := 0; i < len(numList)-numberLeft; i++ {
+		numValue, _ := strconv.Atoi(string(numList[i]))
+		if numValue > highestAvailable {
+			highestAvailable = numValue
+			highestIndex = i
+		}
+	}
+	return highestAvailable, highestIndex + startingIndex
 }
