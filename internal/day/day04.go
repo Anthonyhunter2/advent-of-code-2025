@@ -45,11 +45,26 @@ func (d *Day4) SolvePart2(input []byte) (string, error) {
 		coords = append(coords, x)
 	}
 	totPaperRemoved := 0
-	for i := 1; i > 0; i = i {
-		newCoord, paperRemoved := meatAndPotatoes(coords)
-		totPaperRemoved += paperRemoved
-		i = paperRemoved
-		coords = newCoord
+
+	for {
+		previousPaperRemoved := totPaperRemoved
+		for x := 0; x < len(coords); x++ {
+			for y := 0; y < len(coords[x]); y++ {
+				// fmt.Println("current coords: ", x, y, coords[x][y])
+				if coords[x][y] == "." {
+					continue
+				}
+				if paperAccessable(coords, x, y) {
+					// fmt.Println("Found available paper at:", x, y)
+					totPaperRemoved++
+					coords[x][y] = "."
+				}
+
+			}
+		}
+		if totPaperRemoved == previousPaperRemoved {
+			break
+		}
 	}
 	return strconv.Itoa(totPaperRemoved), nil
 }
@@ -75,32 +90,36 @@ func meatAndPotatoes(coords [][]string) ([][]string, int) {
 
 func paperAccessable(coords [][]string, x int, y int) bool {
 	// all available coordinates around x and y.... ie (x-1,y-1)(x0,y-1)
-	blanks := 0
+	// blanks := 0
 	paper := 0
 	for i := -1; i <= 1; i++ {
 		for j := -1; j <= 1; j++ {
+			if i == 0 && j == 0 {
+				continue
+			}
 			xCoordToCheck := x + i
 			yCoordToCheck := y + j
 			//checking out of bounds gives a blank space
-			if xCoordToCheck < 0 || yCoordToCheck < 0 || xCoordToCheck > len(coords)-1 || yCoordToCheck > len(coords[x])-1 {
-				blanks++
-				continue
-			}
-			if xCoordToCheck == x && yCoordToCheck == y {
-				continue
-			}
-			// fmt.Println("checking coords for position", x, y, "thigns", xCoordToCheck, yCoordToCheck, coords[xCoordToCheck][yCoordToCheck])
-			if coords[xCoordToCheck][yCoordToCheck] == "@" {
+
+			if xCoordToCheck >= 0 && xCoordToCheck < len(coords) && yCoordToCheck >= 0 && yCoordToCheck < len(coords[x]) && coords[xCoordToCheck][yCoordToCheck] == "@" {
 				paper++
-			} else {
-				blanks++
 			}
+			// if xCoordToCheck < 0 || yCoordToCheck < 0 || xCoordToCheck > len(coords)-1 || yCoordToCheck > len(coords[x])-1 {
+			// 	blanks++
+			// 	continue
+			// }
+			// fmt.Println("checking coords for position", x, y, "thigns", xCoordToCheck, yCoordToCheck, coords[xCoordToCheck][yCoordToCheck])
+			// if coords[xCoordToCheck][yCoordToCheck] == "@" {
+			// 	paper++
+			// } else {
+			// 	blanks++
+			// }
 			if paper == 4 {
 				return false
 			}
-			if blanks == 5 {
-				return true
-			}
+			// if blanks == 5 {
+			// 	return true
+			// }
 		}
 	}
 	return true
